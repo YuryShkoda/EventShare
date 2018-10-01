@@ -51,6 +51,7 @@
 		D212759B215D29DF003D020B /* Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Assets.xcassets; sourceTree = "<group>"; };
 		D212759D215D29DF003D020B /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
 		D21275A7215D35CB003D020B /* EventViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = EventViewController.swift; sourceTree = "<group>"; };
+		D21275A9216262A0003D020B /* TimeShare MessagesExtension.entitlements */ = {isa = PBXFileReference; lastKnownFileType = text.plist.entitlements; path = "TimeShare MessagesExtension.entitlements"; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -104,6 +105,7 @@
 		D2127595215D29DE003D020B /* TimeShare MessagesExtension */ = {
 			isa = PBXGroup;
 			children = (
+				D21275A9216262A0003D020B /* TimeShare MessagesExtension.entitlements */,
 				D2127596215D29DE003D020B /* MessagesViewController.swift */,
 				D2127598215D29DE003D020B /* MainInterface.storyboard */,
 				D21275A7215D35CB003D020B /* EventViewController.swift */,
@@ -165,6 +167,11 @@
 					};
 					D212758D215D29DE003D020B = {
 						CreatedOnToolsVersion = 10.0;
+						SystemCapabilities = {
+							com.apple.ApplicationGroups.iOS = {
+								enabled = 0;
+							};
+						};
 					};
 				};
 			};

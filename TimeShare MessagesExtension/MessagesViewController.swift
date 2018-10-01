@@ -28,6 +28,7 @@ class MessagesViewController: MSMessagesAppViewController {
         guard let vc = storyboard?.instantiateViewController(withIdentifier: identifier) as? EventViewController else { return }
         
         vc.delegate = self
+        vc.load(from: conversation.selectedMessage)
         
         // add child to the parent so that event are forwarded
         addChild(vc)
@@ -77,6 +78,8 @@ class MessagesViewController: MSMessagesAppViewController {
         
         // Create a blank, default message layout
         let layout = MSMessageTemplateLayout()
+        layout.image = render(dates: dates)
+        layout.caption = "I voted"
         message.layout = layout
         
         // Insert it into the conversation
@@ -95,13 +98,57 @@ class MessagesViewController: MSMessagesAppViewController {
         return dateFormater.string(from: date)
     }
     
+    func render(dates: [Date]) -> UIImage {
+        // Define 20-point padding
+        let inset: CGFloat = 20
+        
+        // Create the attributes for drawing using Dynamic Type
+        let attributes = [NSAttributedString.Key.font: UIFont.preferredFont(forTextStyle: .body), NSAttributedString.Key.foregroundColor: UIColor.darkGray]
+        
+        // Make a single string out of all dates
+        var stringTorender = ""
+        
+        dates.forEach {
+            stringTorender += DateFormatter.localizedString(from: $0, dateStyle: .long, timeStyle: .short) + "\n"
+        }
+        
+        // Trim the last line break, then create an attributed string by merging the date string and the attributes
+        let trimmed = stringTorender.trimmingCharacters(in: .whitespacesAndNewlines)
+        let attributedString = NSAttributedString(string: trimmed, attributes: attributes)
+        
+        // Calculate the size required to draw the attributed string, then add the inset to all edges
+        var imageSize = attributedString.size()
+        imageSize.width  += inset * 2
+        imageSize.height += inset * 2
+        
+        // Create an image format that uses @3x scale on an opaque background
+        let format = UIGraphicsImageRendererFormat()
+        format.opaque = true
+        format.scale  = 3
+        
+        // Create a renderer at the correct size using the above format
+        let renderer = UIGraphicsImageRenderer(size: imageSize, format: format)
+        
+        // Render a series of instructions to image
+        let image = renderer.image { ctx in
+            // Draw a solid white background
+            UIColor.white.set()
+            
+            ctx.fill(CGRect(origin: CGPoint.zero, size: imageSize))
+            
+            // Render text on top, using the insets
+            attributedString.draw(at: CGPoint(x: inset, y: inset))
+        }
+        
+        return image
+    }
+    
     // MARK: - Conversation Handling
     
     override func willBecomeActive(with conversation: MSConversation) {
-        // Called when the extension is about to move from the inactive to active state.
-        // This will happen when the extension is about to present UI.
-        
-        // Use this method to configure the extension and restore previously stored state.
+        if presentationStyle == .expanded {
+            displayEventViewController(conversation: conversation, identifier: "SelectDates")
+        }
     }
     
     override func didResignActive(with conversation: MSConversation) {
